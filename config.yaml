@@ -1,0 +1,21 @@
+# Configuration non secrète (le jeton est dans .env ou dans les secrets GitHub).
+site_url: https://cloudi-fi.atlassian.net
+cloud_id: 02f93c22-4123-4e29-a35e-435c1aab8e00
+
+# Spaces à inventorier : clé -> ID du projet Jira.
+projects:
+  CFIT: "10000"
+  CFR: "10099"
+  CFS: "10034"
+
+# Fenêtre d'analyse pour prouver qu'une règle sert encore (en jours).
+usage_window_days: 90
+
+# Nombre maximum de tickets récents analysés par projet pour la preuve d'utilisation.
+max_issues: 3000
+
+# Lire le journal d'audit du space (API interne, la même que l'onglet « Journal d'audit » de Jira)
+# pour connaître les vraies exécutions de chaque règle.
+use_internal_api: true
+# Profondeur demandée en jours (Jira ne conserve qu'environ 4 mois d'historique).
+audit_log_days: 365

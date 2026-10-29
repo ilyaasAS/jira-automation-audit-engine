@@ -1,0 +1,15 @@
+# Secrets : ne jamais versionner
+.env
+
+# Résultats générés (peuvent contenir des données internes)
+output/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+Prompt historique.txt
+*.docx

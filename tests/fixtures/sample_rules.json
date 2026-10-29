@@ -1,0 +1,142 @@
+{
+  "_comment": "Règles FICTIVES pour la démo et les tests (même format que GET /rule/{uuid} de l'API Automation). Les statuts et le compte 'Automation for Jira' sont ceux du site réel.",
+  "rules": [
+    {
+      "rule": {
+        "uuid": "demo-0001",
+        "name": "[DÉMO] Assigner les nouveaux bugs",
+        "state": "ENABLED",
+        "description": "Assigne automatiquement les bugs créés dans CFIT.",
+        "labels": ["qa"],
+        "authorAccountId": "712020:8777d6b4-c2a9-4061-a486-1b3397184747",
+        "actor": {"type": "ACCOUNT_ID", "actor": "557058:f58131cb-b67d-43c7-b30d-6b58d40bd077"},
+        "created": "2025-03-10T09:12:00.000+0100",
+        "updated": "2026-06-02T14:30:00.000+0200",
+        "notifyOnError": "FIRSTERROR",
+        "ruleScopeARIs": ["ari:cloud:jira:02f93c22-4123-4e29-a35e-435c1aab8e00:project/10000"],
+        "trigger": {"component": "TRIGGER", "type": "jira.issue.event.trigger:created", "value": {}},
+        "components": [
+          {"component": "CONDITION", "type": "jira.issue.condition",
+           "value": {"selectedField": {"type": "ID", "value": "issuetype"}, "comparison": "EQUALS",
+                     "compareValue": {"type": "NAME", "value": "Bug"}}},
+          {"component": "ACTION", "type": "jira.issue.assign",
+           "value": {"assignee": {"type": "COPY", "value": "REPORTER"}}}
+        ]
+      }
+    },
+    {
+      "rule": {
+        "uuid": "demo-0002",
+        "name": "[DÉMO] Mettre à jour Plan Execution",
+        "state": "ENABLED",
+        "description": "Renseigne le champ Plan Execution quand un ticket passe En cours.",
+        "authorAccountId": "712020:8777d6b4-c2a9-4061-a486-1b3397184747",
+        "actor": {"type": "ACCOUNT_ID", "actor": "557058:f58131cb-b67d-43c7-b30d-6b58d40bd077"},
+        "created": "2025-09-01T10:00:00.000+0200",
+        "updated": "2026-01-15T10:00:00.000+0100",
+        "notifyOnError": "FIRSTERROR",
+        "ruleScopeARIs": ["ari:cloud:jira:02f93c22-4123-4e29-a35e-435c1aab8e00:project/10000"],
+        "trigger": {"component": "TRIGGER", "type": "jira.issue.event.trigger:transitioned",
+                    "value": {"toStatus": [{"type": "ID", "value": "10001"}]}},
+        "components": [
+          {"component": "ACTION", "type": "jira.issue.edit",
+           "value": {"operations": [{"field": {"type": "ID", "value": "customfield_10544"},
+                                     "type": "SET", "value": "PlanExecution"}]}}
+        ]
+      }
+    },
+    {
+      "rule": {
+        "uuid": "demo-0003",
+        "name": "[DÉMO] Passer en To Test à la fin du dev",
+        "state": "ENABLED",
+        "description": "",
+        "authorAccountId": "712020:8777d6b4-c2a9-4061-a486-1b3397184747",
+        "actor": {"type": "ACCOUNT_ID", "actor": "557058:f58131cb-b67d-43c7-b30d-6b58d40bd077"},
+        "created": "2024-02-01T10:00:00.000+0100",
+        "updated": "2024-05-20T10:00:00.000+0200",
+        "notifyOnError": "NEVER",
+        "ruleScopeARIs": ["ari:cloud:jira:02f93c22-4123-4e29-a35e-435c1aab8e00:project/10000"],
+        "trigger": {"component": "TRIGGER", "type": "jira.manual.trigger.issue", "value": {}},
+        "components": [
+          {"component": "ACTION", "type": "jira.issue.transition",
+           "value": {"destinationStatus": {"type": "ID", "value": "10002"}}},
+          {"component": "ACTION", "type": "jira.issue.comment",
+           "value": {"comment": "Passage automatique en test par {{initiator.displayName}}"}}
+        ]
+      }
+    },
+    {
+      "rule": {
+        "uuid": "demo-0004",
+        "name": "[DÉMO] Ancienne règle QA",
+        "state": "DISABLED",
+        "description": "Ancien workflow avec un statut QA.",
+        "authorAccountId": "5b10ac8d82e05b22cc7d4ef5",
+        "actor": {"type": "ACCOUNT_ID", "actor": "557058:f58131cb-b67d-43c7-b30d-6b58d40bd077"},
+        "created": "2023-04-01T10:00:00.000+0200",
+        "updated": "2024-01-10T10:00:00.000+0100",
+        "ruleScopeARIs": ["ari:cloud:jira:02f93c22-4123-4e29-a35e-435c1aab8e00:project/10000"],
+        "trigger": {"component": "TRIGGER", "type": "jira.issue.event.trigger:transitioned",
+                    "value": {"toStatus": [{"type": "NAME", "value": "QA"}]}},
+        "components": [
+          {"component": "ACTION", "type": "jira.issue.edit",
+           "value": {"operations": [{"field": {"type": "ID", "value": "customfield_99999"}, "type": "SET", "value": "x"}]}}
+        ]
+      }
+    },
+    {
+      "rule": {
+        "uuid": "demo-0005",
+        "name": "[DÉMO] Alerte Slack bugs en qualification",
+        "state": "ENABLED",
+        "description": "Chaque lundi, prévient l'équipe des bugs encore en Qualification.",
+        "authorAccountId": "712020:8777d6b4-c2a9-4061-a486-1b3397184747",
+        "actor": {"type": "ACCOUNT_ID", "actor": "557058:f58131cb-b67d-43c7-b30d-6b58d40bd077"},
+        "created": "2025-11-03T09:00:00.000+0100",
+        "updated": "2026-02-01T09:00:00.000+0100",
+        "notifyOnError": "FIRSTERROR",
+        "ruleScopeARIs": [],
+        "trigger": {"component": "TRIGGER", "type": "jira.jql.scheduled",
+                    "value": {"jql": "project = CFIT AND status = Qualification", "schedule": {"rRule": "FREQ=WEEKLY;BYDAY=MO"}}},
+        "components": [
+          {"component": "ACTION", "type": "jira.issue.outgoing.slack",
+           "value": {"webhookUrl": "https://hooks.slack.com/services/T000/B000/FAKESECRET",
+                     "message": "Bug en attente : {{issue.key}}"}}
+        ]
+      },
+      "connections": [{"id": "conn-1", "token": "FAKE"}]
+    },
+    {
+      "rule": {
+        "uuid": "demo-0006",
+        "name": "[DÉMO] Alerte Slack bugs en qualification (copie)",
+        "state": "ENABLED",
+        "description": "Copie de la règle précédente.",
+        "authorAccountId": "712020:8777d6b4-c2a9-4061-a486-1b3397184747",
+        "actor": {"type": "ACCOUNT_ID", "actor": "557058:f58131cb-b67d-43c7-b30d-6b58d40bd077"},
+        "created": "2026-03-03T09:00:00.000+0100",
+        "updated": "2026-03-03T09:00:00.000+0100",
+        "notifyOnError": "FIRSTERROR",
+        "ruleScopeARIs": ["ari:cloud:jira:02f93c22-4123-4e29-a35e-435c1aab8e00:project/10000"],
+        "trigger": {"component": "TRIGGER", "type": "jira.jql.scheduled",
+                    "value": {"jql": "project = CFIT AND status = Qualification", "schedule": {"rRule": "FREQ=WEEKLY;BYDAY=MO"}}},
+        "components": [
+          {"component": "ACTION", "type": "jira.issue.outgoing.slack",
+           "value": {"webhookUrl": "https://hooks.slack.com/services/T000/B000/FAKESECRET",
+                     "message": "Bug en attente : {{issue.key}}"}}
+        ]
+      }
+    },
+    {
+      "rule": {
+        "uuid": "demo-other",
+        "name": "[DÉMO] Règle d'un autre projet (doit être exclue)",
+        "state": "ENABLED",
+        "ruleScopeARIs": ["ari:cloud:jira:02f93c22-4123-4e29-a35e-435c1aab8e00:project/99999"],
+        "trigger": {"type": "jira.issue.event.trigger:created", "value": {}},
+        "components": []
+      }
+    }
+  ]
+}
